@@ -1,33 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sistemaexpertomedico;
 
 import java.util.ArrayList;
-import java.util.Map;
 import javax.swing.JOptionPane;
-import org.jpl7.Query;
-import org.jpl7.Term;
-import org.jpl7.Util;
-import org.jpl7.Variable;
 
-/**
- *
- * @author IsaacGS
- */
 public class Main extends javax.swing.JFrame implements SistemaExperto.CallBackMain {
 
     private SistemaExperto sistemaExp;
 
-    /**
-     * Creates new form Main
-     */
     public Main() {
         initComponents();
         sistemaExp = new SistemaExperto(this);
-
         if (sistemaExp.loadDataBase()) {
             sistemaExp.startQuestions();
         } else {

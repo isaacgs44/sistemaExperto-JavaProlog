@@ -1,6 +1,3 @@
-/* BaseConocimientos1: diagnosticos y sintomas
-Dominio: diagnostico medico. Trata los sintomas como una lista multi-elementos
-*/
 conocimiento('sarampion',['el paciente esta cubierto de puntos', 'el paciente tiene temperatura alta', 'el paciente tiene ojos rojos','el paciente tiene tos seca']).
 conocimiento('influenza',['el paciente tiene dolor en las articulaciones', 'el paciente tiene mucho estornudo','el paciente tiene dolor de cabeza']).
 conocimiento('malaria',['el paciente tiene temperatura alta', 'el paciente tiene dolor en las articulaciones', 'el paciente tiembla violentamente', 'el paciente tiene escalofrios']).

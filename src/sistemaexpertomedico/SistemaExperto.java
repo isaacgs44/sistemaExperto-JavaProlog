@@ -1,24 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sistemaexpertomedico;
 
 import java.util.ArrayList;
 import java.util.Map;
 import org.jpl7.Query;
 import org.jpl7.Term;
-import org.jpl7.Util;
 
-/**
- *
- * @author IsaacGS
- */
 public class SistemaExperto {
 
-    private String baseConocimiento;
-    private String sistemaExperto;
     private static final String QUESTION_FORMAT = "¿Es verdad que %s ?";
     private SistemaExperto.CallBackMain callBackMain;
     private Query conocimiento;
@@ -30,66 +18,45 @@ public class SistemaExperto {
 
     public SistemaExperto(CallBackMain callBackMain) {
         this.callBackMain = callBackMain;
-        String experto = "consult('expertojava.pl')";//aqui colocan el nombre de su archivo a compilar
-        String conocimiento = "consult('conocimiento.pl')";//aqui colocan el nombre de su archivo a compilar
+        String experto = "consult('expertojava.pl')";
+        String conocimiento = "consult('conocimiento.pl')";
 
         Query q1 = new Query(experto);
         Query q2 = new Query(conocimiento);
-        System.out.println(experto + " " + (q1.hasSolution() ? "true" : "false")); //mostrara mensaje  si hay o no conexion           
-        System.out.println(conocimiento + " " + (q2.hasSolution() ? "true" : "false")); //mostrara mensaje  si hay o no conexion     
 
         if (q1.hasSolution() && q2.hasSolution()) {
-            System.out.println("------------->Sistema Cargado correctamente");
+            System.out.println("El sistema se cargo correctamente!");
             loadDataBase();
         } else {
-            System.out.println("------------->El sistema experto no se pudo cargar");
+            System.out.println("El sistema no se pudo cargar correctamente!");
         }
     }
 
     public boolean loadDataBase() {
-
         conocimiento = new Query("conocimiento(X,Y)");
-        System.out.println("---Goal-->" + conocimiento.goal());
         if (conocimiento.hasSolution()) {
             data = conocimiento.allSolutions();
-            System.out.println("lenght solution: " + conocimiento.allSolutions().length);
-
         }
-
         return conocimiento.hasSolution();
     }
 
     public void startQuestions() {
-
         boolean questionSuccess = false;
-        boolean responseFalse = false;
         callBackMain.setQuestion("");
+
         for (int i = 0; i < data.length; i++) {
-            System.out.println("----->" + Util.toString(data[i]));
-            System.out.println("i: " + i);
             Map<String, Term> solution = data[i];
-            System.out.println("X = " + solution.get("X"));
             Term sintomas = solution.get("Y");
             Term enfermedad = solution.get("X");
-
-            System.out.println("length: " + sintomas.toTermArray().length);
             Term[] sintomasArray = sintomas.toTermArray();
 
             for (int j = 0; j < sintomasArray.length; j++) {
+                Query q1 = new Query("prueba_verdad_de(" + enfermedad + ", " + sintomasArray[j] + ")");
 
-                System.out.println("--Argument--->" + sintomasArray[j]);
-                Query q5 = new Query("prueba_verdad_de(" + enfermedad
-                        + ", " + sintomasArray[j] + ")");
+                if (q1.hasSolution()) {
+                    Query q2 = new Query("is_response_false(" + enfermedad + ", " + sintomasArray[j] + ")");
 
-                System.out.println("-----Goal--->" + q5.goal());
-                System.out.println("-----Sol--->" + q5.hasSolution());
-
-                if (q5.hasSolution()) {
-                    Query q6 = new Query("is_response_false(" + enfermedad
-                            + ", " + sintomasArray[j] + ")");
-                    System.out.println("----------response false------->" + q6.hasSolution());
-
-                    if (q6.hasSolution()) {
+                    if (q2.hasSolution()) {
                         break;
                     }
 
@@ -101,12 +68,12 @@ public class SistemaExperto {
                     break;
                 }
 
-            }
+            } //Termina ciclo interno
 
             if (questionSuccess) {
                 break;
             }
-        }
+        }// Termina ciclo
 
         if (!questionSuccess) {
             callBackMain.finish();
@@ -135,17 +102,13 @@ public class SistemaExperto {
 
         if (!consulta.isEmpty()) {
             Query query = new Query(consulta);
-            System.out.println("--->Goal:" + query.goal());
-            System.out.println("--->Sol: " + query.hasSolution());
+            query.goal();
+            query.hasSolution();
         }
 
     }
 
     public boolean findDiagnostic() {
-        System.out.println("***********************************");
-        System.out.println("**************INICIO*********************");
-        System.out.println("***********************************");
-
         ArrayList<Boolean> validador = new ArrayList<>();
 
         for (int i = 0; i < data.length; i++) {
@@ -159,12 +122,9 @@ public class SistemaExperto {
             Term[] sintomasArray = sintomas.toTermArray();
 
             for (int j = 0; j < sintomasArray.length; j++) {
-                Query q5 = new Query("is_response_true(" + enfermedad
-                        + ", " + sintomasArray[j] + ")");
-                System.out.println("---GOAL------>" + q5.goal());
-                System.out.println("<------------" + q5.hasSolution());
-                validador.add(q5.hasSolution());
-                if (q5.hasSolution()) {
+                Query q1 = new Query("is_response_true(" + enfermedad + ", " + sintomasArray[j] + ")");
+                validador.add(q1.hasSolution());
+                if (q1.hasSolution()) {
                     sintomasEncontrados.add(sintomasArray[j].toString());
                 }
             }
@@ -175,19 +135,11 @@ public class SistemaExperto {
 
             if (aux) {
                 isDiagnostic = true;
-                System.out.println("**************************************");
-                System.out.println("**************************************");
-                System.out.println("**************************************");
-                System.out.println("--------------->Enfermedad encontrada: " + enfermedad);
                 callBackMain.diagnosisCompleted(enfermedad.toString());
-
                 return true;
             }
         }
 
-        System.out.println("***********************************");
-        System.out.println("***********FIN************************");
-        System.out.println("***********************************");
         return false;
     }
 
