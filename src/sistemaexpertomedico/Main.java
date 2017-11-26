@@ -210,6 +210,10 @@ public class Main extends javax.swing.JFrame implements SistemaExperto.CallBackM
         } else {
             showDialog("Seleccione una respuesta");
         }
+        
+        radSi.setSelected(false);
+        radNo.setSelected(false);
+        radPorQue.setSelected(false);
     }//GEN-LAST:event_btnOkActionPerformed
 
     private void radNoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_radNoStateChanged
