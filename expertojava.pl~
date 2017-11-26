@@ -34,9 +34,6 @@ conocido(is_false(Sintoma)).
 
 is_response_false(Diagnosis, Sintoma):- conocido(is_false(Sintoma)).
 
-is_response_true(Diagnosis, Sintoma):- conocido(Sintoma).
-
-
 % prueba_verdad_de(Diagnosis, Sintoma):-
 % not(conocido(is_false(Sintoma))),write('false').
 %
